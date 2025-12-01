@@ -17,6 +17,7 @@ const ScholarChat: React.FC = () => {
   // Attachments & Voice
   const [attachment, setAttachment] = useState<{data: string, mimeType: string, preview: string} | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -126,19 +127,19 @@ const ScholarChat: React.FC = () => {
     }
   };
 
-  const handleSend = async () => {
-    if ((!input.trim() && !attachment) || isLoading) return;
+  // Send Message Logic
+  const executeSend = async (textInput: string, imgAttachment: typeof attachment) => {
+    if ((!textInput.trim() && !imgAttachment) || isLoading) return;
 
     const userMsg: ChatMessage = { 
       id: Date.now().toString(), 
       role: 'user', 
-      text: input,
-      image: attachment?.preview // Store preview for UI
+      text: textInput,
+      image: imgAttachment?.preview // Store preview for UI
     };
     
     setMessages(prev => [...prev, userMsg]);
     setInput('');
-    const currentAttachment = attachment;
     setAttachment(null);
     setIsLoading(true);
 
@@ -147,9 +148,9 @@ const ScholarChat: React.FC = () => {
       let thinking = mode === 'deep';
       
       // If image is attached, force a vision compatible model if not already
-      if (currentAttachment) {
+      if (imgAttachment) {
         model = 'gemini-3-pro-preview';
-        thinking = false; // Usually disable thinking for pure vision tasks unless needed, but 3-pro supports it. Keeping flexible.
+        thinking = false; 
       } else if (mode === 'fast') {
         model = 'gemini-flash-lite-latest';
         thinking = false;
@@ -162,10 +163,10 @@ const ScholarChat: React.FC = () => {
       const systemPrompt = getSystemPrompt(settings.language);
 
       // Prepare images format for service
-      const images = currentAttachment ? [{
+      const images = imgAttachment ? [{
         inlineData: {
-          data: currentAttachment.data,
-          mimeType: currentAttachment.mimeType
+          data: imgAttachment.data,
+          mimeType: imgAttachment.mimeType
         }
       }] : undefined;
 
@@ -207,6 +208,10 @@ const ScholarChat: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSend = () => {
+      executeSend(input, attachment);
   };
 
   return (
@@ -260,7 +265,13 @@ const ScholarChat: React.FC = () => {
               )}
 
               <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed font-arabic text-lg">
-                {msg.text}
+                {/* Render text with special highlight for Dua blocks if formatted by AI */}
+                {msg.text.split('\n').map((line, i) => (
+                    <span key={i}>
+                        {line}
+                        <br/>
+                    </span>
+                ))}
               </div>
               
               {/* Sources */}
@@ -293,7 +304,8 @@ const ScholarChat: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700">
+      <div className="p-4 bg-white dark:bg-stone-800 border-t border-stone-200 dark:border-stone-700 relative">
+        
         {/* Attachment Preview */}
         {attachment && (
             <div className="flex items-center gap-2 mb-2 p-2 bg-stone-100 dark:bg-stone-700 rounded-lg w-fit">
@@ -306,6 +318,7 @@ const ScholarChat: React.FC = () => {
         )}
 
         <div className="max-w-4xl mx-auto flex gap-3 items-end">
+          
           {/* File Upload Button */}
           <div className="flex-none">
             <input 
@@ -320,7 +333,7 @@ const ScholarChat: React.FC = () => {
                 className="bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 text-stone-600 dark:text-stone-300 rounded-full p-3 w-12 h-12 flex items-center justify-center transition-all"
                 title="Attach Image"
             >
-                <span className="material-icons">attach_file</span>
+                <span className="material-icons">add_photo_alternate</span>
             </button>
           </div>
 
