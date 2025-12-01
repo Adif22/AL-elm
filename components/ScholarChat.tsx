@@ -23,12 +23,35 @@ const ScholarChat: React.FC = () => {
 
   // Initialize greeting on language change
   useEffect(() => {
+     let text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
+     
+     switch(settings.language) {
+         case 'Bangla':
+             text = "আসসালামু আলাইকুম। আমি আল-আলিম। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?";
+             break;
+         case 'Arabic':
+             text = "السلام عليكم. أنا العليم. كيف يمكنني مساعدتك اليوم؟";
+             break;
+         case 'Chinese':
+             text = "阿萨拉姆·阿莱库姆。我是全知者（Al-Alim）。今天我能为您做什么？";
+             break;
+         case 'Hindi':
+             text = "अस-सलाम अलैकुम। मैं अल-अलीम हूं। आज मैं आपकी कैसे मदद कर सकता हूं?";
+             break;
+         case 'Urdu':
+             text = "السلام علیکم! میں العلیم ہوں۔ آج میں آپ کی کس طرح مدد کر سکتا ہوں؟";
+             break;
+         case 'Indonesian':
+             text = "Assalamualaikum. Saya Al-Alim. Bagaimana saya bisa membantu Anda hari ini?";
+             break;
+         default:
+             text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
+     }
+
      setMessages([{
         id: 'welcome',
         role: 'model',
-        text: settings.language === 'Bangla' 
-            ? "আসসালামু আলাইকুম। আমি আল-আলিম। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?"
-            : "As-salamu alaykum. I am Al-Alim. How may I assist you today?"
+        text: text
      }]);
   }, [settings.language]);
 

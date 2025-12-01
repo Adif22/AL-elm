@@ -4,19 +4,19 @@ import { useApp } from '../contexts/AppContext';
 
 // Data for visual grid
 const SURAHS = Array.from({ length: 114 }, (_, i) => i + 1);
-const COMMON_SURAHS: Record<number, {en: string, bn: string}> = {
-    1: {en: "Al-Fatiha", bn: "আল-ফাতিহা"},
-    2: {en: "Al-Baqarah", bn: "আল-বাকারা"},
-    3: {en: "Ali 'Imran", bn: "আলে-ইমরান"},
-    4: {en: "An-Nisa", bn: "আন-নিসা"},
-    5: {en: "Al-Ma'idah", bn: "আল-মায়িদাহ"},
-    18: {en: "Al-Kahf", bn: "আল-কাহফ"},
-    36: {en: "Ya-Sin", bn: "ইয়াসিন"},
-    55: {en: "Ar-Rahman", bn: "আর-রহমান"},
-    67: {en: "Al-Mulk", bn: "আল-মুলক"},
-    112: {en: "Al-Ikhlas", bn: "আল-ইখলাস"},
-    113: {en: "Al-Falaq", bn: "আল-ফালাক"},
-    114: {en: "An-Nas", bn: "আন-নাস"}
+const COMMON_SURAHS: Record<number, {en: string, bn: string, cn: string, hi: string}> = {
+    1: {en: "Al-Fatiha", bn: "আল-ফাতিহা", cn: "开端章", hi: "अल-फातिहा"},
+    2: {en: "Al-Baqarah", bn: "আল-বাকারা", cn: "黄牛章", hi: "अल-बकरा"},
+    3: {en: "Ali 'Imran", bn: "আলে-ইমরান", cn: "阿姆兰家属章", hi: "आले-इमरान"},
+    4: {en: "An-Nisa", bn: "আন-নিসা", cn: "妇女章", hi: "अन-निसा"},
+    5: {en: "Al-Ma'idah", bn: "আল-মায়িদাহ", cn: "筵席章", hi: "अल-माइदा"},
+    18: {en: "Al-Kahf", bn: "আল-কাহফ", cn: "山洞章", hi: "अल-कहफ"},
+    36: {en: "Ya-Sin", bn: "ইয়াসিন", cn: "雅辛章", hi: "या-सीन"},
+    55: {en: "Ar-Rahman", bn: "আর-রহমান", cn: "至仁主章", hi: "अर-रहमान"},
+    67: {en: "Al-Mulk", bn: "আল-মুলক", cn: "国权章", hi: "अल-मुल्क"},
+    112: {en: "Al-Ikhlas", bn: "আল-ইখলাস", cn: "忠诚章", hi: "अल-इखलास"},
+    113: {en: "Al-Falaq", bn: "আল-ফালাক", cn: "曙光章", hi: "अल-फलक"},
+    114: {en: "An-Nas", bn: "আন-নাস", cn: "世人章", hi: "अन-नास"}
 };
 
 const QuranBrowser: React.FC = () => {
@@ -24,6 +24,18 @@ const QuranBrowser: React.FC = () => {
     const [activeSurah, setActiveSurah] = useState<number | null>(null);
     const [content, setContent] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const getSurahTitle = (num: number) => {
+        const surah = COMMON_SURAHS[num];
+        if (!surah) return `Surah ${num}`;
+        
+        switch(settings.language) {
+            case 'Bangla': return surah.bn;
+            case 'Chinese': return surah.cn;
+            case 'Hindi': return surah.hi;
+            default: return surah.en;
+        }
+    };
 
     const fetchSurah = async (number: number) => {
         setIsLoading(true);
@@ -59,7 +71,11 @@ const QuranBrowser: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-3xl font-bold text-emerald-900 dark:text-emerald-400">
-                        {settings.language === 'Bangla' ? 'আল-কুরআনুল কারীম' : 'The Holy Quran'}
+                        {settings.language === 'Bangla' ? 'আল-কুরআনুল কারীম' : 
+                         settings.language === 'Chinese' ? '古兰经' :
+                         settings.language === 'Hindi' ? 'अल-कुरान' :
+                         settings.language === 'Arabic' ? 'القرآن الكريم' :
+                         'The Holy Quran'}
                     </h2>
                     {activeSurah && (
                          <button 
@@ -80,7 +96,7 @@ const QuranBrowser: React.FC = () => {
                         
                         <div className="relative z-10 max-w-4xl mx-auto">
                             <h3 className="text-4xl text-center font-arabic text-emerald-800 dark:text-emerald-300 mb-8 pb-4 border-b border-stone-200 dark:border-stone-600">
-                                {COMMON_SURAHS[activeSurah]?.[settings.language === 'Bangla' ? 'bn' : 'en'] || `Surah ${activeSurah}`}
+                                {getSurahTitle(activeSurah)}
                             </h3>
                             
                             {isLoading ? (
@@ -113,7 +129,7 @@ const QuranBrowser: React.FC = () => {
                                     {num}
                                 </span>
                                 <span className="font-semibold text-stone-800 dark:text-stone-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
-                                    {COMMON_SURAHS[num]?.[settings.language === 'Bangla' ? 'bn' : 'en'] || `Surah ${num}`}
+                                    {getSurahTitle(num)}
                                 </span>
                             </button>
                         ))}

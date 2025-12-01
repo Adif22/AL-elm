@@ -11,7 +11,9 @@ export enum Language {
   ENGLISH = 'English',
   ARABIC = 'Arabic',
   URDU = 'Urdu',
-  INDONESIAN = 'Indonesian'
+  INDONESIAN = 'Indonesian',
+  CHINESE = 'Chinese',
+  HINDI = 'Hindi'
 }
 
 export interface AppSettings {
@@ -134,5 +136,35 @@ export const UI_TRANSLATIONS = {
     dailyVerse: 'Ayat Hari Ini',
     search: 'Cari',
     read: 'Baca'
+  },
+  [Language.CHINESE]: {
+    appTitle: 'Al-Alim',
+    subtitle: '伊斯兰智能',
+    dashboard: '仪表板',
+    chat: '学者聊天',
+    quran: '古兰经',
+    hadith: '圣训',
+    tafsir: '古兰经注',
+    settings: '设置',
+    enter: '进入',
+    selectLang: '选择语言',
+    dailyVerse: '每日经文',
+    search: '搜索',
+    read: '阅读'
+  },
+  [Language.HINDI]: {
+    appTitle: 'अल-अलीम',
+    subtitle: 'इस्लामिक इंटेलिजेंस',
+    dashboard: 'डैशबोर्ड',
+    chat: 'स्कॉलर चैट',
+    quran: 'अल-कुरान',
+    hadith: 'सहीह हदीस',
+    tafsir: 'तफसीर',
+    settings: 'सेटिंग्स',
+    enter: 'प्रवेश करें',
+    selectLang: 'भाषा चुनें',
+    dailyVerse: 'आज की आयत',
+    search: 'खोजें',
+    read: 'पढ़ें'
   }
 };

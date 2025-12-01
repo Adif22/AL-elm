@@ -42,6 +42,19 @@ const HadithBrowser: React.FC = () => {
         setQuery('');
     };
 
+    const getTitle = () => {
+        if (activeBook) {
+            return books.find(b => b.id === activeBook)?.title;
+        }
+        switch(settings.language) {
+            case 'Bangla': return 'হাদিস গ্রন্থসমূহ';
+            case 'Arabic': return 'كتب الحديث';
+            case 'Chinese': return '圣训书籍';
+            case 'Hindi': return 'हदीस की किताबें';
+            default: return 'Hadith Books';
+        }
+    };
+
     return (
         <div className="h-full bg-stone-50 dark:bg-stone-900 p-8 overflow-y-auto font-arabic">
             <div className="max-w-5xl mx-auto">
@@ -52,9 +65,7 @@ const HadithBrowser: React.FC = () => {
                         </button>
                     )}
                     <h2 className="text-3xl font-bold text-emerald-900 dark:text-emerald-400">
-                        {activeBook 
-                           ? books.find(b => b.id === activeBook)?.title 
-                           : (settings.language === 'Bangla' ? 'হাদিস গ্রন্থসমূহ' : 'Hadith Books')}
+                        {getTitle()}
                     </h2>
                 </div>
                 
