@@ -9,8 +9,8 @@ const ScholarChat: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Settings
-  const [mode, setMode] = useState<'deep' | 'fast'>('deep');
+  // Settings - Default to 'fast' mode
+  const [mode, setMode] = useState<'deep' | 'fast'>('fast');
   const [useSearch, setUseSearch] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   

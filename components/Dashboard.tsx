@@ -30,9 +30,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
     { id: AppView.SCHOLAR_CHAT, label: t.chat, icon: '📖', color: 'bg-blue-100 text-blue-800' },
     { id: AppView.QURAN, label: t.quran, icon: '☪️', color: 'bg-emerald-100 text-emerald-800' },
     { id: AppView.HADITH, label: t.hadith, icon: '📚', color: 'bg-amber-100 text-amber-800' },
-    { id: AppView.MEDIA_ANALYSIS, label: t.media, icon: '👁️', color: 'bg-purple-100 text-purple-800' },
-    { id: AppView.LIVE_CONVERSATION, label: t.live, icon: '🎙️', color: 'bg-red-100 text-red-800' },
-    { id: AppView.AUDIO_TOOLS, label: t.audio, icon: '🔊', color: 'bg-indigo-100 text-indigo-800' },
+    { id: AppView.TAFSIR, label: t.tafsir, icon: 'description', color: 'bg-purple-100 text-purple-800' },
   ];
 
   return (

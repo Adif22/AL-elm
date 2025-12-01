@@ -17,14 +17,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
     { id: AppView.QURAN, label: t.quran, icon: 'auto_stories' },
     { id: AppView.TAFSIR, label: t.tafsir, icon: 'description' },
     { id: AppView.HADITH, label: t.hadith, icon: 'library_books' },
-    { id: AppView.LIVE_CONVERSATION, label: t.live, icon: 'mic' },
-    { id: AppView.MEDIA_ANALYSIS, label: t.media, icon: 'image_search' },
-    { id: AppView.AUDIO_TOOLS, label: t.audio, icon: 'graphic_eq' },
   ];
 
   return (
-    <div className="w-64 bg-emerald-900 dark:bg-stone-950 text-emerald-50 h-screen flex flex-col shadow-xl font-arabic border-r border-emerald-800 dark:border-stone-800 transition-colors">
-      <div className="p-6 border-b border-emerald-800 dark:border-stone-800">
+    <div className="w-full h-full bg-emerald-900 dark:bg-stone-950 text-emerald-50 flex flex-col font-arabic border-r border-emerald-800 dark:border-stone-800 transition-colors">
+      <div className="p-6 border-b border-emerald-800 dark:border-stone-800 shrink-0">
         <h1 className="text-2xl font-bold text-amber-400">{t.appTitle}</h1>
         <p className="text-xs text-emerald-300 mt-1 uppercase tracking-wider">{t.subtitle}</p>
       </div>
@@ -47,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
       </nav>
 
       {/* Settings Area */}
-      <div className="p-4 border-t border-emerald-800 dark:border-stone-800 bg-emerald-900/50 dark:bg-stone-900/50">
+      <div className="p-4 border-t border-emerald-800 dark:border-stone-800 bg-emerald-900/50 dark:bg-stone-900/50 shrink-0">
           <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-emerald-300">{t.settings}</span>
           </div>
