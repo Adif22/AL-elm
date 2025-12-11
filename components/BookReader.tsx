@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { generateScholarResponse } from '../services/geminiService';
@@ -60,7 +61,7 @@ const BookReader: React.FC<BookReaderProps> = ({ type, title }) => {
     }
 
     try {
-        const response = await generateScholarResponse(prompt, 'gemini-2.5-flash', systemPrompt);
+        const response = await generateScholarResponse(prompt, [], 'gemini-2.5-flash', systemPrompt);
         // We inject the current font size classes into the HTML string returned by Gemini
         // Ideally we would ask for JSON, but HTML injection is often more stable for layout in this specific prompt context
         let htmlContent = response.text || '';
@@ -74,7 +75,7 @@ const BookReader: React.FC<BookReaderProps> = ({ type, title }) => {
             ? `Fetch Surah/Verse ${location}. Return a list where each item has: 1. Arabic Text 2. ${userLang} Translation 3. Brief Explanation. Use Markdown separators.`
             : `Fetch Hadith regarding ${location}. Return list: 1. Arabic 2. ${userLang} Translation 3. Explanation.`;
             
-        const mdResponse = await generateScholarResponse(markdownPrompt, 'gemini-2.5-flash', systemPrompt);
+        const mdResponse = await generateScholarResponse(markdownPrompt, [], 'gemini-2.5-flash', systemPrompt);
         setContent(mdResponse.text || 'Content not found.');
         
     } catch (e) {

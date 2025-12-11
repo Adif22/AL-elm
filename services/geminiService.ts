@@ -1,5 +1,6 @@
+
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
-import { ImageAspectRatio, ImageSize } from "../types";
+import { ImageAspectRatio, ImageSize, ChatMessage } from "../types";
 
 // Ensure API key is available
 const apiKey = process.env.API_KEY;
@@ -13,6 +14,7 @@ const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 
 export const generateScholarResponse = async (
   prompt: string,
+  history: ChatMessage[],
   model: string,
   systemInstruction: string,
   useSearch: boolean = false,
@@ -33,19 +35,29 @@ export const generateScholarResponse = async (
   }
 
   try {
-    const contents: any = { parts: [] };
-    
-    // Add images if present
+    // Transform chat history for the API
+    // The API expects: { role: 'user' | 'model', parts: [{text: '...'}] }
+    const contents: any[] = history.map(msg => ({
+        role: msg.role,
+        parts: [{ text: msg.text }]
+    }));
+
+    // Construct the NEW message part
+    const newParts: any[] = [];
     if (images && images.length > 0) {
-       images.forEach(img => contents.parts.push(img));
+       images.forEach(img => newParts.push(img));
     }
-    
-    // Add text prompt
-    contents.parts.push({ text: prompt });
+    newParts.push({ text: prompt });
+
+    // Append new message to history
+    contents.push({
+        role: 'user',
+        parts: newParts
+    });
 
     const response = await ai.models.generateContent({
       model,
-      contents: images ? contents : prompt, // If images exist use object structure, else string is fine usually but let's be safe
+      contents, // Pass the array of conversation turns
       config,
     });
     return response;

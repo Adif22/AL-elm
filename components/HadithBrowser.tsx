@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { generateScholarResponse } from '../services/geminiService';
 import { useApp } from '../contexts/AppContext';
@@ -27,7 +28,7 @@ const HadithBrowser: React.FC = () => {
             3. ${settings.language} Translation.
             4. Short explanation.`;
             
-            const response = await generateScholarResponse(prompt, 'gemini-2.5-flash', "You are a Muhaddith (Hadith scholar).");
+            const response = await generateScholarResponse(prompt, [], 'gemini-2.5-flash', "You are a Muhaddith (Hadith scholar).");
             setContent(response.text || "No hadith found.");
         } catch (e) {
             setContent("Error fetching Hadith.");

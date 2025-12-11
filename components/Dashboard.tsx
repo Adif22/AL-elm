@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
 import { AppView, UI_TRANSLATIONS, getSystemPrompt } from '../types';
@@ -17,7 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
       try {
         const prompt = "Provide one short, inspiring Ayat from the Quran with Arabic and translation. Do not add any conversational filler.";
         const systemPrompt = getSystemPrompt(settings.language);
-        const response = await generateScholarResponse(prompt, 'gemini-2.5-flash', systemPrompt);
+        const response = await generateScholarResponse(prompt, [], 'gemini-2.5-flash', systemPrompt);
         setDailyVerse(response.text || '');
       } catch (e) {
         console.error(e);
@@ -57,7 +58,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
         </div>
 
         {/* Grid Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {cards.map((card) => (
             <button
               key={card.id}
@@ -73,6 +74,20 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
               </div>
             </button>
           ))}
+
+          {/* Feedback Card (New) */}
+          <button
+            onClick={() => setActiveView(AppView.FEEDBACK)}
+            className="bg-white dark:bg-stone-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all border border-red-100 dark:border-red-900/30 flex items-center space-x-4 text-left group"
+          >
+              <div className="p-4 rounded-xl bg-red-100 text-red-800 group-hover:scale-110 transition-transform">
+                <span className="material-icons text-2xl">bug_report</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-stone-800 dark:text-stone-100 text-lg">{t.feedback || 'Feedback'}</h3>
+                <span className="text-xs text-stone-400 dark:text-stone-500">{t.reportBug || 'Report Issue'} &rarr;</span>
+              </div>
+          </button>
         </div>
       </div>
     </div>

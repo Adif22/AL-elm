@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage, getSystemPrompt } from '../types';
 import { generateScholarResponse, transcribeAudio } from '../services/geminiService';
@@ -22,47 +23,46 @@ const ScholarChat: React.FC = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Initialize greeting on language change
+  // --- PERSISTENCE LOGIC START ---
+  // Load chat history from local storage on mount
   useEffect(() => {
-     let text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
-     
-     switch(settings.language) {
-         case 'Bangla':
-             text = "আসসালামু আলাইকুম। আমি আল-আলিম। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?";
-             break;
-         case 'Arabic':
-             text = "السلام عليكم. أنا العليم. كيف يمكنني مساعدتك اليوم؟";
-             break;
-         case 'Chinese':
-             text = "阿萨拉姆·阿莱库姆。我是全知者（Al-Alim）。今天我能为您做什么？";
-             break;
-         case 'Hindi':
-             text = "अस-सलाम अलैकुम। मैं अल-अलीम हूं। आज मैं आपकी कैसे मदद कर सकता हूं?";
-             break;
-         case 'Urdu':
-             text = "السلام علیکم! میں العلیم ہوں۔ آج میں آپ کی کس طرح مدد کر سکتا ہوں؟";
-             break;
-         case 'Indonesian':
-             text = "Assalamualaikum. Saya Al-Alim. Bagaimana saya bisa membantu Anda hari ini?";
-             break;
-         default:
-             text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
-     }
+      const savedHistory = localStorage.getItem('chat_history');
+      if (savedHistory) {
+          try {
+              setMessages(JSON.parse(savedHistory));
+          } catch (e) { console.error("Error parsing chat history", e); }
+      } else {
+          // Initialize greeting if no history
+          initializeGreeting();
+      }
+  }, []);
 
-     setMessages([{
-        id: 'welcome',
-        role: 'model',
-        text: text
-     }]);
-  }, [settings.language]);
+  // Save chat history whenever messages change
+  useEffect(() => {
+      if (messages.length > 0) {
+          localStorage.setItem('chat_history', JSON.stringify(messages));
+      }
+      scrollToBottom();
+  }, [messages]);
+
+  const initializeGreeting = () => {
+     let text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
+     switch(settings.language) {
+         case 'Bangla': text = "আসসালামু আলাইকুম। আমি আল-আলিম। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?"; break;
+         case 'Arabic': text = "السلام عليكم. أنا العليم. كيف يمكنني مساعدتك اليوم؟"; break;
+         case 'Chinese': text = "阿萨拉姆·阿莱库姆。我是全知者（Al-Alim）。今天我能为您做什么？"; break;
+         case 'Hindi': text = "अस-सलाम अलैकुम। मैं अल-अलीम हूं। आज मैं आपकी कैसे मदद कर सकता हूं?"; break;
+         case 'Urdu': text = "السلام علیکم! میں العلیم ہوں۔ آج میں آپ کی کس طرح مدد کر سکتا ہوں؟"; break;
+         case 'Indonesian': text = "Assalamualaikum. Saya Al-Alim. Bagaimana saya bisa membantu Anda hari ini?"; break;
+         default: text = "As-salamu alaykum. I am Al-Alim. How may I assist you today?";
+     }
+     setMessages([{ id: 'welcome', role: 'model', text: text }]);
+  };
+  // --- PERSISTENCE LOGIC END ---
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   // Handle File Upload
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,14 +71,9 @@ const ScholarChat: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        // result is "data:image/jpeg;base64,..."
         const [meta, data] = result.split(',');
         const mimeType = meta.split(':')[1].split(';')[0];
-        setAttachment({
-          data,
-          mimeType,
-          preview: result
-        });
+        setAttachment({ data, mimeType, preview: result });
       };
       reader.readAsDataURL(file);
     }
@@ -95,11 +90,9 @@ const ScholarChat: React.FC = () => {
         const recorder = new MediaRecorder(stream);
         mediaRecorderRef.current = recorder;
         audioChunksRef.current = [];
-
         recorder.ondataavailable = (e) => {
           if (e.data.size > 0) audioChunksRef.current.push(e.data);
         };
-
         recorder.onstop = async () => {
           setIsLoading(true);
           const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
@@ -109,16 +102,12 @@ const ScholarChat: React.FC = () => {
              try {
                const text = await transcribeAudio(base64String, 'audio/webm');
                if (text) setInput(prev => prev + " " + text);
-             } catch (e) {
-               console.error("Transcription failed", e);
-             } finally {
-               setIsLoading(false);
-             }
+             } catch (e) { console.error("Transcription failed", e); } 
+             finally { setIsLoading(false); }
           };
           reader.readAsDataURL(blob);
           stream.getTracks().forEach(t => t.stop());
         };
-
         recorder.start();
         setIsRecording(true);
       } catch (e) {
@@ -135,9 +124,10 @@ const ScholarChat: React.FC = () => {
       id: Date.now().toString(), 
       role: 'user', 
       text: textInput,
-      image: imgAttachment?.preview // Store preview for UI
+      image: imgAttachment?.preview 
     };
     
+    // Optimistically update UI
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setAttachment(null);
@@ -147,7 +137,6 @@ const ScholarChat: React.FC = () => {
       let model = 'gemini-3-pro-preview';
       let thinking = mode === 'deep';
       
-      // If image is attached, force a vision compatible model if not already
       if (imgAttachment) {
         model = 'gemini-3-pro-preview';
         thinking = false; 
@@ -159,10 +148,8 @@ const ScholarChat: React.FC = () => {
         thinking = false;
       }
 
-      // Dynamic System Prompt
       const systemPrompt = getSystemPrompt(settings.language);
 
-      // Prepare images format for service
       const images = imgAttachment ? [{
         inlineData: {
           data: imgAttachment.data,
@@ -170,8 +157,12 @@ const ScholarChat: React.FC = () => {
         }
       }] : undefined;
 
+      // Pass previous messages to provide context (Memory)
+      const historyContext = messages.slice(-20); // Send last 20 messages for context
+
       const response = await generateScholarResponse(
         userMsg.text,
+        historyContext,
         model,
         systemPrompt,
         useSearch,
@@ -184,9 +175,7 @@ const ScholarChat: React.FC = () => {
       const sources: string[] = [];
       if (useSearch && response.candidates?.[0]?.groundingMetadata?.groundingChunks) {
         response.candidates[0].groundingMetadata.groundingChunks.forEach((chunk: any) => {
-          if (chunk.web?.uri) {
-            sources.push(chunk.web.uri);
-          }
+          if (chunk.web?.uri) sources.push(chunk.web.uri);
         });
       }
 
@@ -212,6 +201,15 @@ const ScholarChat: React.FC = () => {
 
   const handleSend = () => {
       executeSend(input, attachment);
+  };
+
+  // Helper to clear chat history
+  const clearChat = () => {
+      if(confirm("Are you sure you want to clear chat history?")) {
+          localStorage.removeItem('chat_history');
+          setMessages([]);
+          initializeGreeting();
+      }
   };
 
   return (
@@ -245,6 +243,14 @@ const ScholarChat: React.FC = () => {
              <span className="material-icons text-lg">search</span>
              {useSearch ? 'On' : 'Off'}
            </button>
+
+           <button 
+             onClick={clearChat}
+             className="text-red-500 hover:bg-red-50 p-2 rounded-full"
+             title="Clear Chat History"
+            >
+               <span className="material-icons text-lg">delete_outline</span>
+           </button>
         </div>
       </div>
 
@@ -265,12 +271,8 @@ const ScholarChat: React.FC = () => {
               )}
 
               <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed font-arabic text-lg">
-                {/* Render text with special highlight for Dua blocks if formatted by AI */}
                 {msg.text.split('\n').map((line, i) => (
-                    <span key={i}>
-                        {line}
-                        <br/>
-                    </span>
+                    <span key={i}>{line}<br/></span>
                 ))}
               </div>
               

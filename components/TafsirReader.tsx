@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { generateScholarResponse } from '../services/geminiService';
 
@@ -12,7 +13,7 @@ const TafsirReader: React.FC = () => {
         setIsLoading(true);
         try {
             const prompt = `সূরা ${surah}, আয়াত ${ayah} এর তাফসীর প্রদান করো। তাফসীর ইবনে কাসির বা নির্ভরযোগ্য উৎস থেকে হতে হবে। প্রথমে আরবি আয়াত, তারপর বাংলা অনুবাদ এবং শেষে বিস্তারিত তাফসীর দাও।`;
-            const response = await generateScholarResponse(prompt, 'gemini-3-pro-preview', "তুমি একজন মুফাসসির। বিস্তারিত তাফসীর প্রদান করো।");
+            const response = await generateScholarResponse(prompt, [], 'gemini-3-pro-preview', "তুমি একজন মুফাসসির। বিস্তারিত তাফসীর প্রদান করো।");
             setContent(response.text || "দুঃখিত, তাফসীর পাওয়া যায়নি।");
         } catch (e) {
             setContent("ত্রুটি হয়েছে।");

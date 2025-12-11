@@ -1,9 +1,11 @@
+
 export enum AppView {
   DASHBOARD = 'DASHBOARD',
   SCHOLAR_CHAT = 'SCHOLAR_CHAT',
   QURAN = 'QURAN',
   TAFSIR = 'TAFSIR',
-  HADITH = 'HADITH'
+  HADITH = 'HADITH',
+  FEEDBACK = 'FEEDBACK'
 }
 
 export enum Language {
@@ -14,6 +16,14 @@ export enum Language {
   INDONESIAN = 'Indonesian',
   CHINESE = 'Chinese',
   HINDI = 'Hindi'
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email?: string; // Optional for guest
+  avatar?: string;
+  provider: 'google' | 'facebook' | 'guest';
 }
 
 export interface AppSettings {
@@ -49,39 +59,51 @@ export enum ImageSize {
 }
 
 export const getSystemPrompt = (lang: Language) => `
-You are Al-Alim, a wise, gentle, and strictly authentic Islamic Scholar AI. 
+You are Al-Alim, an Islamic comparative-religion AI trained to answer questions with respect, logic, and evidence—similar to the style of Dr. Zakir Naik.
 
-CORE RULES:
- 1. Sources: Use ONLY the Holy Quran, Sahih Hadith (Bukhari, Muslim, etc.), and consensus of classical scholars (Ijma).
- 2. Accuracy: Never invent fatwas. If there is a difference of opinion, mention it.
- 3. Behavior: Be respectful, humble, and compassionate. Avoid extremism or political controversy.
- 4. Language: Your output MUST be in ${lang}.
- 
-SPECIAL INSTRUCTION FOR EMOTIONAL DISTRESS & DUAS:
- If the user mentions depression, sadness, anxiety, fear, debt, illness, or any hardship:
- 1. EMPATHY: Start by acknowledging their pain with a gentle Islamic reminder (e.g., "Allah does not burden a soul beyond that it can bear").
- 2. PRESCRIBED DUA: Provide the specific Masnoon Dua from Quran or Sahih Hadith for that exact situation.
- 3. REQUIRED FORMAT for the Dua section:
+CORE MISSION:
+Explain Islamic concepts clearly using:
+1. The Holy Qur’an
+2. Sahih Hadith (Bukhari, Muslim, etc.)
+3. Logic, science, and comparative reasoning
+4. Comparative references from the Torah, Bible, Gita, and other major scriptures when relevant.
+
+RULES & RESPONSIBILITIES:
+1. RESPECT: When non-Muslims or Muslims ask sensitive or critical questions, respond calmly, respectfully, and intellectually. Never attack, insult, or mock any faith.
+2. EVIDENCE: Present Islam’s viewpoint with authentic evidence. Use comparative references only to clarify or bridge understanding—not to insult.
+3. LOGIC: Defend Islamic beliefs using logic, scientific reasoning, and textual analysis.
+4. TONE: Avoid debate language; focus on explanation, not confrontation. Be confident about Islamic teachings but neutral and polite toward other religions.
+5. LANGUAGE: Your output MUST be in ${lang}.
+
+SCENARIOS:
+- If asked "Why Islam is correct?": Answer using reason: Qur’anic preservation, Universality, Scientific accuracy (careful, no false claims), Monotheism, and Logical consistency.
+- If asked about other scriptures: Compare facts respectfully and academically (e.g., "In the Bible it says X, and in the Quran it clarifies Y").
+- If the user expresses EMOTIONAL DISTRESS (depression, anxiety, fear, debt, etc.):
+    1. Answer with compassion.
+    2. Provide the specific Masnoon Dua from Quran/Sahih Hadith.
+    3. Include a short Islamic reminder.
     
+    REQUIRED FORMAT FOR DUAS:
     > **🤲 Dua for [Situation]**
     >
     > **Arabic:**
-    > [Insert Arabic Text Here with Vowels/Tashkeel]
+    > [Insert Arabic Text Here with Vowels]
     >
     > **Transliteration:**
-    > [Insert clear Transliteration]
+    > [Insert Transliteration]
     >
     > **Translation:**
     > "[Insert Translation in ${lang}]"
     >
     > **Source:**
-    > [e.g., Sahih Bukhari 1234 / Surah Taha 20:25]
-    
- 4. REMINDER: End with a short, comforting spiritual advice related to the Dua.
+    > [Reference, e.g., Sahih Bukhari 1234]
 
-GENERAL FORMATTING:
- - When quoting Quran/Hadith normally, provide the Arabic text first, followed by the translation in ${lang}, then the explanation.
- - For complex life decisions (marriage, divorce), always advise consulting a local qualified scholar.
+TONE:
+- Respectful
+- Logical
+- Clear
+- Evidence-based
+- Peace-promoting
 `;
 
 export const UI_TRANSLATIONS = {
@@ -98,7 +120,14 @@ export const UI_TRANSLATIONS = {
     selectLang: 'ভাষা নির্বাচন করুন',
     dailyVerse: 'আজকের আয়াত',
     search: 'অনুসন্ধান',
-    read: 'পড়ুন'
+    read: 'পড়ুন',
+    loginGoogle: 'গুগল দিয়ে লগইন',
+    loginFacebook: 'ফেসবুক দিয়ে লগইন',
+    loginGuest: 'গেস্ট হিসেবে চালিয়ে যান',
+    feedback: 'মতামত দিন',
+    reportBug: 'ভুল রিপোর্ট করুন',
+    submit: 'জমা দিন',
+    feedbackDesc: 'অ্যাপের কোনো ভুল বা সমস্যা পেলে আমাদের জানান।'
   },
   [Language.ENGLISH]: {
     appTitle: 'Al-Alim',
@@ -113,7 +142,14 @@ export const UI_TRANSLATIONS = {
     selectLang: 'Select Language',
     dailyVerse: 'Verse of the Day',
     search: 'Search',
-    read: 'Read'
+    read: 'Read',
+    loginGoogle: 'Continue with Google',
+    loginFacebook: 'Continue with Facebook',
+    loginGuest: 'Continue as Guest',
+    feedback: 'Feedback',
+    reportBug: 'Report Issue',
+    submit: 'Submit',
+    feedbackDesc: 'Help us improve by reporting bugs or content errors.'
   },
   [Language.ARABIC]: {
     appTitle: 'العليم',
@@ -128,7 +164,14 @@ export const UI_TRANSLATIONS = {
     selectLang: 'اختر اللغة',
     dailyVerse: 'آية اليوم',
     search: 'بحث',
-    read: 'اقرأ'
+    read: 'اقرأ',
+    loginGoogle: 'متابعة عبر جوجل',
+    loginFacebook: 'متابعة عبر فيسبوك',
+    loginGuest: 'متابعة كضيف',
+    feedback: 'ملاحظات',
+    reportBug: 'الإبلاغ عن خطأ',
+    submit: 'إرسال',
+    feedbackDesc: 'ساعدنا في التحسين من خلال الإبلاغ عن الأخطاء.'
   },
   [Language.URDU]: {
     appTitle: 'العليم',
@@ -143,7 +186,14 @@ export const UI_TRANSLATIONS = {
     selectLang: 'زبان منتخب کریں',
     dailyVerse: 'آج کی آیت',
     search: 'تلاش',
-    read: 'پڑھیں'
+    read: 'پڑھیں',
+    loginGoogle: 'گوگل کے ساتھ جاری رکھیں',
+    loginFacebook: 'فیس بک کے ساتھ جاری رکھیں',
+    loginGuest: 'مہمان کے طور پر جاری رکھیں',
+    feedback: 'فیڈ بیک',
+    reportBug: 'مسئلہ رپورٹ کریں',
+    submit: 'جمع کرائیں',
+    feedbackDesc: 'غلطیوں کی اطلاع دے کر ہماری مدد کریں۔'
   },
   [Language.INDONESIAN]: {
     appTitle: 'Al-Alim',
@@ -158,7 +208,14 @@ export const UI_TRANSLATIONS = {
     selectLang: 'Pilih Bahasa',
     dailyVerse: 'Ayat Hari Ini',
     search: 'Cari',
-    read: 'Baca'
+    read: 'Baca',
+    loginGoogle: 'Lanjutkan dengan Google',
+    loginFacebook: 'Lanjutkan dengan Facebook',
+    loginGuest: 'Lanjutkan sebagai Tamu',
+    feedback: 'Masukan',
+    reportBug: 'Laporkan Masalah',
+    submit: 'Kirim',
+    feedbackDesc: 'Bantu kami meningkatkan aplikasi dengan melaporkan bug.'
   },
   [Language.CHINESE]: {
     appTitle: 'Al-Alim',
@@ -173,7 +230,14 @@ export const UI_TRANSLATIONS = {
     selectLang: '选择语言',
     dailyVerse: '每日经文',
     search: '搜索',
-    read: '阅读'
+    read: '阅读',
+    loginGoogle: '通过 Google 继续',
+    loginFacebook: '通过 Facebook 继续',
+    loginGuest: '以访客身份继续',
+    feedback: '反馈',
+    reportBug: '报告问题',
+    submit: '提交',
+    feedbackDesc: '通过报告错误帮助我们改进。'
   },
   [Language.HINDI]: {
     appTitle: 'अल-अलीम',
@@ -188,6 +252,13 @@ export const UI_TRANSLATIONS = {
     selectLang: 'भाषा चुनें',
     dailyVerse: 'आज की आयत',
     search: 'खोजें',
-    read: 'पढ़ें'
+    read: 'पढ़ें',
+    loginGoogle: 'Google के साथ जारी रखें',
+    loginFacebook: 'Facebook के साथ जारी रखें',
+    loginGuest: 'अतिथि के रूप में जारी रखें',
+    feedback: 'प्रतिक्रिया',
+    reportBug: 'समस्या रिपोर्ट करें',
+    submit: 'जमा करें',
+    feedbackDesc: 'त्रुटियों की रिपोर्ट करके हमारी मदद करें।'
   }
 };

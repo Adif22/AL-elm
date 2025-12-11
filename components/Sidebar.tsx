@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AppView, UI_TRANSLATIONS } from '../types';
 import { useApp } from '../contexts/AppContext';
@@ -8,7 +9,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
-  const { settings, setTheme, logout } = useApp();
+  const { settings, setTheme, logout, user } = useApp();
   const t = UI_TRANSLATIONS[settings.language];
 
   const navItems = [
@@ -26,7 +27,24 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
         <p className="text-xs text-emerald-300 mt-1 uppercase tracking-wider">{t.subtitle}</p>
       </div>
       
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+      {/* User Profile Section in Sidebar */}
+      {user && (
+          <div className="p-4 mx-4 mt-4 bg-emerald-800/50 rounded-xl flex items-center gap-3 border border-emerald-700">
+              {user.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-amber-400/50" />
+              ) : (
+                  <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-lg">
+                      {user.name.charAt(0)}
+                  </div>
+              )}
+              <div className="overflow-hidden">
+                  <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                  <p className="text-xs text-emerald-300 truncate capitalize">{user.provider} User</p>
+              </div>
+          </div>
+      )}
+
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -41,6 +59,23 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
             <span className="font-medium">{item.label}</span>
           </button>
         ))}
+        
+        {/* Divider */}
+        <div className="my-2 border-t border-emerald-800 dark:border-stone-800"></div>
+
+        {/* Feedback Link */}
+        <button
+            onClick={() => setActiveView(AppView.FEEDBACK)}
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+              activeView === AppView.FEEDBACK
+                ? 'bg-emerald-800 dark:bg-stone-800 text-white shadow-md border-l-4 border-amber-400'
+                : 'hover:bg-emerald-800/50 dark:hover:bg-stone-800/50 text-emerald-200'
+            }`}
+        >
+            <span className="material-icons text-xl">bug_report</span>
+            <span className="font-medium">{t.feedback || "Feedback"}</span>
+        </button>
+
       </nav>
 
       {/* Settings Area */}
@@ -63,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
 
           <button 
             onClick={logout}
-            className="w-full py-2 text-xs text-emerald-400 hover:text-white flex items-center justify-center gap-1"
+            className="w-full py-2 text-xs text-emerald-400 hover:text-white flex items-center justify-center gap-1 hover:bg-emerald-800 rounded transition-colors"
           >
               <span className="material-icons text-sm">logout</span> Logout
           </button>

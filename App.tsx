@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
@@ -5,12 +6,13 @@ import ScholarChat from './components/ScholarChat';
 import QuranBrowser from './components/QuranBrowser';
 import HadithBrowser from './components/HadithBrowser';
 import TafsirReader from './components/TafsirReader';
+import FeedbackForm from './components/FeedbackForm'; // Imported
 import LoginScreen from './components/LoginScreen';
 import { AppView, UI_TRANSLATIONS } from './types';
 import { useApp } from './contexts/AppContext';
 
 const App: React.FC = () => {
-  const { isLoggedIn, settings } = useApp();
+  const { user, settings } = useApp();
   const [activeView, setActiveView] = useState<AppView>(AppView.DASHBOARD);
   
   // Navigation History State
@@ -46,7 +48,7 @@ const App: React.FC = () => {
     if (prevView) setActiveView(prevView);
   };
 
-  if (!isLoggedIn) {
+  if (!user) {
     return <LoginScreen />;
   }
 
@@ -62,6 +64,8 @@ const App: React.FC = () => {
         return <HadithBrowser />;
       case AppView.TAFSIR:
         return <TafsirReader />;
+      case AppView.FEEDBACK:
+        return <FeedbackForm />;
       default:
         return <Dashboard setActiveView={navigateTo} />;
     }
@@ -118,8 +122,17 @@ const App: React.FC = () => {
                {t.appTitle}
             </h1>
             
-            {/* Spacer for layout balance */}
-            <div className="w-10 lg:hidden"></div> 
+            {/* User Avatar Mini Display (Top Right) */}
+            <div className="flex items-center gap-3">
+                 <span className="text-sm font-bold text-emerald-800 dark:text-emerald-400 hidden sm:block">{user.name}</span>
+                 {user.avatar ? (
+                     <img src={user.avatar} alt="User" className="w-8 h-8 rounded-full border border-stone-200" />
+                 ) : (
+                     <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                         {user.name.charAt(0)}
+                     </div>
+                 )}
+            </div>
          </div>
 
          {/* View Container */}

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { generateScholarResponse } from '../services/geminiService';
 import { useApp } from '../contexts/AppContext';
@@ -51,7 +52,7 @@ const QuranBrowser: React.FC = () => {
             3. Brief footnote or explanation if necessary.
             Use Markdown formatting.`;
             
-            const response = await generateScholarResponse(prompt, 'gemini-2.5-flash', "You are a Quran presenter. Output clean Markdown.");
+            const response = await generateScholarResponse(prompt, [], 'gemini-2.5-flash', "You are a Quran presenter. Output clean Markdown.");
             setContent(response.text || "Could not load Surah content.");
         } catch (e) {
             setContent("Error loading content. Please try again.");
