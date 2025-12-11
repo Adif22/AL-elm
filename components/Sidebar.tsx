@@ -18,6 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
     { id: AppView.QURAN, label: t.quran, icon: 'auto_stories' },
     { id: AppView.TAFSIR, label: t.tafsir, icon: 'description' },
     { id: AppView.HADITH, label: t.hadith, icon: 'library_books' },
+    { id: AppView.TASBIH, label: t.tasbih || 'Tasbih', icon: 'cyclone' },
   ];
 
   return (
@@ -27,31 +28,27 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
         <p className="text-xs text-emerald-300 mt-1 uppercase tracking-wider">{t.subtitle}</p>
       </div>
       
-      {/* User Profile Section in Sidebar */}
+      {/* User Profile Section in Sidebar - Simplified since we have header profile now */}
       {user && (
-          <div className="p-4 mx-4 mt-4 bg-emerald-800/50 rounded-xl flex items-center gap-3 border border-emerald-700">
-              {user.avatar ? (
-                  <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-amber-400/50" />
-              ) : (
-                  <div className="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-lg">
-                      {user.name.charAt(0)}
-                  </div>
-              )}
-              <div className="overflow-hidden">
-                  <p className="text-sm font-bold text-white truncate">{user.name}</p>
-                  <p className="text-xs text-emerald-300 truncate capitalize">{user.provider} User</p>
+          <div className="px-6 py-4 border-b border-emerald-800/50">
+              <p className="text-xs text-emerald-400 uppercase tracking-widest font-semibold mb-2">Logged in as</p>
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center font-bold text-xs text-emerald-100 border border-emerald-500">
+                    {user.name.charAt(0)}
+                 </div>
+                 <span className="text-sm font-medium truncate">{user.name}</span>
               </div>
           </div>
       )}
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto mt-2 custom-scrollbar">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveView(item.id)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
               activeView === item.id
-                ? 'bg-emerald-800 dark:bg-stone-800 text-white shadow-md border-l-4 border-amber-400'
+                ? 'bg-emerald-800 dark:bg-stone-800 text-white shadow-lg border-l-4 border-amber-400'
                 : 'hover:bg-emerald-800/50 dark:hover:bg-stone-800/50 text-emerald-200'
             }`}
           >
@@ -66,9 +63,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
         {/* Feedback Link */}
         <button
             onClick={() => setActiveView(AppView.FEEDBACK)}
-            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+            className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
               activeView === AppView.FEEDBACK
-                ? 'bg-emerald-800 dark:bg-stone-800 text-white shadow-md border-l-4 border-amber-400'
+                ? 'bg-emerald-800 dark:bg-stone-800 text-white shadow-lg border-l-4 border-amber-400'
                 : 'hover:bg-emerald-800/50 dark:hover:bg-stone-800/50 text-emerald-200'
             }`}
         >
@@ -100,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
             onClick={logout}
             className="w-full py-2 text-xs text-emerald-400 hover:text-white flex items-center justify-center gap-1 hover:bg-emerald-800 rounded transition-colors"
           >
-              <span className="material-icons text-sm">logout</span> Logout
+              <span className="material-icons text-sm">logout</span> {t.logout || "Logout"}
           </button>
       </div>
     </div>

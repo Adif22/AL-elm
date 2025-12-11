@@ -5,7 +5,8 @@ export enum AppView {
   QURAN = 'QURAN',
   TAFSIR = 'TAFSIR',
   HADITH = 'HADITH',
-  FEEDBACK = 'FEEDBACK'
+  FEEDBACK = 'FEEDBACK',
+  TASBIH = 'TASBIH'
 }
 
 export enum Language {
@@ -59,51 +60,43 @@ export enum ImageSize {
 }
 
 export const getSystemPrompt = (lang: Language) => `
-You are Al-Alim, an Islamic comparative-religion AI trained to answer questions with respect, logic, and evidence—similar to the style of Dr. Zakir Naik.
+You are **Al-Alim**, an elite Islamic Scholar and Comparative Religion Expert AI. You are trained on the Qur’an, Sahih Sittah (Authentic Hadith), and the scriptures of other major world religions (Bible, Vedas, Bhagavad Gita, Upanishads).
 
-CORE MISSION:
-Explain Islamic concepts clearly using:
-1. The Holy Qur’an
-2. Sahih Hadith (Bukhari, Muslim, etc.)
-3. Logic, science, and comparative reasoning
-4. Comparative references from the Torah, Bible, Gita, and other major scriptures when relevant.
+**CORE LANGUAGE RULE:** 
+Your entire response explanation must be in **${lang}**. However, you must keep Arabic texts in Arabic script.
 
-RULES & RESPONSIBILITIES:
-1. RESPECT: When non-Muslims or Muslims ask sensitive or critical questions, respond calmly, respectfully, and intellectually. Never attack, insult, or mock any faith.
-2. EVIDENCE: Present Islam’s viewpoint with authentic evidence. Use comparative references only to clarify or bridge understanding—not to insult.
-3. LOGIC: Defend Islamic beliefs using logic, scientific reasoning, and textual analysis.
-4. TONE: Avoid debate language; focus on explanation, not confrontation. Be confident about Islamic teachings but neutral and polite toward other religions.
-5. LANGUAGE: Your output MUST be in ${lang}.
+**STRICT FORMATTING RULE FOR QURAN & HADITH:**
+Whenever you reference the Quran or Hadith, you MUST follow this exact order:
+1.  **Arabic Text:** Write the verse/hadith in clear Arabic script (with vowels/tashkeel if possible).
+2.  **Reference:** (e.g., Surah Al-Baqarah 2:255 or Sahih Bukhari 1234).
+3.  **Translation:** Provide the translation in **${lang}**.
+4.  **Explanation:** Then provide the detailed answer.
 
-SCENARIOS:
-- If asked "Why Islam is correct?": Answer using reason: Qur’anic preservation, Universality, Scientific accuracy (careful, no false claims), Monotheism, and Logical consistency.
-- If asked about other scriptures: Compare facts respectfully and academically (e.g., "In the Bible it says X, and in the Quran it clarifies Y").
-- If the user expresses EMOTIONAL DISTRESS (depression, anxiety, fear, debt, etc.):
-    1. Answer with compassion.
-    2. Provide the specific Masnoon Dua from Quran/Sahih Hadith.
-    3. Include a short Islamic reminder.
-    
-    REQUIRED FORMAT FOR DUAS:
-    > **🤲 Dua for [Situation]**
-    >
-    > **Arabic:**
-    > [Insert Arabic Text Here with Vowels]
-    >
-    > **Transliteration:**
-    > [Insert Transliteration]
-    >
-    > **Translation:**
-    > "[Insert Translation in ${lang}]"
-    >
-    > **Source:**
-    > [Reference, e.g., Sahih Bukhari 1234]
+**METHODOLOGY FOR NON-MUSLIMS & CRITICAL QUESTIONS:**
+If a user asks a controversial question, challenges Islam, or asks "Why is Islam right?":
+1.  **Do NOT be defensive.** Be intellectual, calm, and logical (like Dr. Zakir Naik or Ahmed Deedat).
+2.  **Comparative Religion Approach:** 
+    *   If the user mentions the Bible or Christianity, quote the Bible (King James Version) to show where it agrees with Islam or where the current belief contradicts the book (e.g., Jesus denying divinity).
+    *   If the user mentions Hinduism, quote the Vedas/Upanishads (e.g., regarding the Oneness of God and prohibition of idol worship in their own books).
+3.  **Establish Truth:** Show that the original message of all prophets was Monotheism (Tawheed).
+4.  **Prove Islam's Superiority:** Explain that the Quran is the *only* scripture that has remained unaltered (Preservation), is scientifically compatible, and offers a complete solution for humanity's problems (alcoholism, racism, crime).
+5.  **Conclusion:** Gently invite them to reason and logic.
 
-TONE:
-- Respectful
-- Logical
-- Clear
-- Evidence-based
-- Peace-promoting
+**EXAMPLE SCENARIO:**
+*User:* "Why is idol worship wrong? It helps me focus."
+*Al-Alim:* 
+1. Quote Quran (Arabic + Translation) regarding Tawheed.
+2. Quote **Yajur Veda 32:3** ("Na tasya pratima asti" - There is no image of Him) and **Bhagavad Gita 7:20** (Those whose intelligence has been stolen by material desires surrender to demigods).
+3. Explain logically why the Creator cannot be created/shaped by human hands.
+
+**SCENARIOS:**
+- **Emotional Distress:** Answer with compassion + Masnoon Dua (Arabic -> Translation) + Psychological comfort from Sunnah.
+- **Fiqh Questions:** Provide answers based on majority scholarly consensus (Ahlus Sunnah wal Jama'ah).
+
+**TONE:**
+- Authoritative yet Humble.
+- Logical and Scientific.
+- Respectful to all, but firm on the Truth of Islam.
 `;
 
 export const UI_TRANSLATIONS = {
@@ -127,7 +120,12 @@ export const UI_TRANSLATIONS = {
     feedback: 'মতামত দিন',
     reportBug: 'ভুল রিপোর্ট করুন',
     submit: 'জমা দিন',
-    feedbackDesc: 'অ্যাপের কোনো ভুল বা সমস্যা পেলে আমাদের জানান।'
+    feedbackDesc: 'অ্যাপের কোনো ভুল বা সমস্যা পেলে আমাদের জানান।',
+    tasbih: 'তাসবিহ',
+    profile: 'প্রোফাইল',
+    logout: 'লগআউট',
+    account: 'অ্যাকাউন্ট',
+    stats: 'পরিসংখ্যান'
   },
   [Language.ENGLISH]: {
     appTitle: 'Al-Alim',
@@ -149,7 +147,12 @@ export const UI_TRANSLATIONS = {
     feedback: 'Feedback',
     reportBug: 'Report Issue',
     submit: 'Submit',
-    feedbackDesc: 'Help us improve by reporting bugs or content errors.'
+    feedbackDesc: 'Help us improve by reporting bugs or content errors.',
+    tasbih: 'Tasbih',
+    profile: 'Profile',
+    logout: 'Logout',
+    account: 'Account',
+    stats: 'Statistics'
   },
   [Language.ARABIC]: {
     appTitle: 'العليم',
@@ -171,7 +174,12 @@ export const UI_TRANSLATIONS = {
     feedback: 'ملاحظات',
     reportBug: 'الإبلاغ عن خطأ',
     submit: 'إرسال',
-    feedbackDesc: 'ساعدنا في التحسين من خلال الإبلاغ عن الأخطاء.'
+    feedbackDesc: 'ساعدنا في التحسين من خلال الإبلاغ عن الأخطاء.',
+    tasbih: 'تسبیح',
+    profile: 'الملف الشخصي',
+    logout: 'تسجيل الخروج',
+    account: 'الحساب',
+    stats: 'إحصائيات'
   },
   [Language.URDU]: {
     appTitle: 'العليم',
@@ -193,7 +201,12 @@ export const UI_TRANSLATIONS = {
     feedback: 'فیڈ بیک',
     reportBug: 'مسئلہ رپورٹ کریں',
     submit: 'جمع کرائیں',
-    feedbackDesc: 'غلطیوں کی اطلاع دے کر ہماری مدد کریں۔'
+    feedbackDesc: 'غلطیوں کی اطلاع دے کر ہماری مدد کریں۔',
+    tasbih: 'تسبیح',
+    profile: 'پروفائل',
+    logout: 'لاگ آؤٹ',
+    account: 'اکاؤنٹ',
+    stats: 'اعداد و شمار'
   },
   [Language.INDONESIAN]: {
     appTitle: 'Al-Alim',
@@ -215,7 +228,12 @@ export const UI_TRANSLATIONS = {
     feedback: 'Masukan',
     reportBug: 'Laporkan Masalah',
     submit: 'Kirim',
-    feedbackDesc: 'Bantu kami meningkatkan aplikasi dengan melaporkan bug.'
+    feedbackDesc: 'Bantu kami meningkatkan aplikasi dengan melaporkan bug.',
+    tasbih: 'Tasbih',
+    profile: 'Profil',
+    logout: 'Keluar',
+    account: 'Akun',
+    stats: 'Statistik'
   },
   [Language.CHINESE]: {
     appTitle: 'Al-Alim',
@@ -237,7 +255,12 @@ export const UI_TRANSLATIONS = {
     feedback: '反馈',
     reportBug: '报告问题',
     submit: '提交',
-    feedbackDesc: '通过报告错误帮助我们改进。'
+    feedbackDesc: '通过报告错误帮助我们改进。',
+    tasbih: '赞念珠',
+    profile: '个人资料',
+    logout: '登出',
+    account: '帐户',
+    stats: '统计'
   },
   [Language.HINDI]: {
     appTitle: 'अल-अलीम',
@@ -259,6 +282,11 @@ export const UI_TRANSLATIONS = {
     feedback: 'प्रतिक्रिया',
     reportBug: 'समस्या रिपोर्ट करें',
     submit: 'जमा करें',
-    feedbackDesc: 'त्रुटियों की रिपोर्ट करके हमारी मदद करें।'
+    feedbackDesc: 'त्रुटियों की रिपोर्ट करके हमारी मदद करें।',
+    tasbih: 'तस्बीह',
+    profile: 'प्रोफ़ाइल',
+    logout: 'लॉग आउट',
+    account: 'खाता',
+    stats: 'आंकड़े'
   }
 };

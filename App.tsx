@@ -6,8 +6,10 @@ import ScholarChat from './components/ScholarChat';
 import QuranBrowser from './components/QuranBrowser';
 import HadithBrowser from './components/HadithBrowser';
 import TafsirReader from './components/TafsirReader';
-import FeedbackForm from './components/FeedbackForm'; // Imported
+import FeedbackForm from './components/FeedbackForm';
+import TasbihCounter from './components/TasbihCounter';
 import LoginScreen from './components/LoginScreen';
+import UserProfileModal from './components/UserProfileModal';
 import { AppView, UI_TRANSLATIONS } from './types';
 import { useApp } from './contexts/AppContext';
 
@@ -20,6 +22,9 @@ const App: React.FC = () => {
   
   // Mobile Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Profile Modal State
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const t = UI_TRANSLATIONS[settings.language];
 
@@ -66,6 +71,8 @@ const App: React.FC = () => {
         return <TafsirReader />;
       case AppView.FEEDBACK:
         return <FeedbackForm />;
+      case AppView.TASBIH:
+        return <TasbihCounter />;
       default:
         return <Dashboard setActiveView={navigateTo} />;
     }
@@ -81,6 +88,9 @@ const App: React.FC = () => {
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      {/* User Profile Modal */}
+      <UserProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
       {/* Sidebar - Responsive Wrapper */}
       <div className={`
@@ -122,17 +132,22 @@ const App: React.FC = () => {
                {t.appTitle}
             </h1>
             
-            {/* User Avatar Mini Display (Top Right) */}
-            <div className="flex items-center gap-3">
+            {/* User Avatar - Now Clickable Trigger for Modal */}
+            <button 
+                onClick={() => setIsProfileOpen(true)}
+                className="flex items-center gap-3 p-1 rounded-full hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                title="View Profile"
+            >
                  <span className="text-sm font-bold text-emerald-800 dark:text-emerald-400 hidden sm:block">{user.name}</span>
                  {user.avatar ? (
-                     <img src={user.avatar} alt="User" className="w-8 h-8 rounded-full border border-stone-200" />
+                     <img src={user.avatar} alt="User" className="w-9 h-9 rounded-full border border-stone-200 shadow-sm" />
                  ) : (
-                     <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                     <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shadow-sm">
                          {user.name.charAt(0)}
                      </div>
                  )}
-            </div>
+                 <span className="material-icons text-stone-400 text-sm hidden sm:block">keyboard_arrow_down</span>
+            </button>
          </div>
 
          {/* View Container */}

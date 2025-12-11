@@ -32,6 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
     { id: AppView.QURAN, label: t.quran, icon: '☪️', color: 'bg-emerald-100 text-emerald-800' },
     { id: AppView.HADITH, label: t.hadith, icon: '📚', color: 'bg-amber-100 text-amber-800' },
     { id: AppView.TAFSIR, label: t.tafsir, icon: 'description', color: 'bg-purple-100 text-purple-800' },
+    { id: AppView.TASBIH, label: t.tasbih || 'Tasbih', icon: 'cyclone', color: 'bg-teal-100 text-teal-800' },
   ];
 
   return (
@@ -75,7 +76,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setActiveView }) => {
             </button>
           ))}
 
-          {/* Feedback Card (New) */}
+          {/* Feedback Card */}
           <button
             onClick={() => setActiveView(AppView.FEEDBACK)}
             className="bg-white dark:bg-stone-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all border border-red-100 dark:border-red-900/30 flex items-center space-x-4 text-left group"
